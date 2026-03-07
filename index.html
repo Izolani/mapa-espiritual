@@ -1,141 +1,180 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
 <meta charset="UTF-8">
 <title>Mapa Espiritual de Paracambi</title>
 
 <style>
-  body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    display: flex;
-  }
 
-  #lista {
-    width: 300px;
-    height: 100vh;
-    overflow-y: auto;
-    padding: 10px;
-    background: #f5f5f5;
-    border-right: 1px solid #ccc;
-  }
+body{
+margin:0;
+font-family:Arial;
+display:flex;
+}
 
-  #lista h2 {
-    text-align: center;
-  }
+#lista{
+width:320px;
+height:100vh;
+overflow:auto;
+border-right:1px solid #ccc;
+padding:10px;
+background:#f7f7f7;
+}
 
-  .item {
-    padding: 8px;
-    margin-bottom: 8px;
-    border-bottom: 1px solid #ddd;
-    cursor: pointer;
-  }
+#map{
+flex:1;
+height:100vh;
+}
 
-  .item:hover {
-    background: #e6f2ff;
-  }
+.item{
+cursor:pointer;
+padding:8px;
+border-bottom:1px solid #ddd;
+}
 
-  #map {
-    flex: 1;
-    height: 100vh;
-  }
+.item:hover{
+background:#e8f4ff;
+}
+
 </style>
+
 </head>
 
 <body>
 
 <div id="lista">
-  <h2>Igrejas de Paracambi</h2>
+<h2>Igrejas de Paracambi</h2>
 </div>
 
 <div id="map"></div>
 
 <script>
-function initMap() {
 
-  const map = new google.maps.Map(document.getElementById("map"), {
-    zoom: 13,
-    center: { lat: -22.6068, lng: -43.7113 }
-  });
+let map;
+let geocoder;
 
-  const geocoder = new google.maps.Geocoder();
-  const bounds = new google.maps.LatLngBounds();
-  const lista = document.getElementById("lista");
+function initMap(){
 
-  const igrejas = [
-    { nome:"IEADP – Assembleia de Deus", bairro:"Centro", endereco:"R. Afonso Franco, 15, Paracambi - RJ" },
-    { nome:"Igreja Batista de Paracambi", bairro:"Centro", endereco:"R. Juiz Emílio Carmo, 61, Paracambi - RJ" },
-    { nome:"Congregacional de Paracambi", bairro:"Centro", endereco:"R. Dr. Nilo Peçanha, 222, Paracambi - RJ" },
-    { nome:"Povo de Deus do Brasil", bairro:"Centro", endereco:"Tv. Pedro Soares, 17, Paracambi - RJ" },
+map = new google.maps.Map(document.getElementById("map"),{
+zoom:13,
+center:{lat:-22.6070,lng:-43.7108}
+});
 
-    { nome:"AD Rua 10", bairro:"Lages", endereco:"R. Dep. Romeu Natal, 1017, Paracambi - RJ" },
-    { nome:"AD Ministério de Lages", bairro:"Lages", endereco:"R. Leal de Carvalho, 50, Paracambi - RJ" },
-    { nome:"Cristo Vive de Paracambi", bairro:"Lages", endereco:"Estr. RJ-127, 9737, Paracambi - RJ" },
+geocoder = new google.maps.Geocoder();
 
-    { nome:"Igreja Batista Guarajuba", bairro:"Guarajuba", endereco:"R. São Jorge, 201, Paracambi - RJ" },
+const igrejas=[
 
-    { nome:"Missão Evangélica do Brasil", bairro:"Sabugo", endereco:"R. Beraldo Sacchi, 955, Paracambi - RJ" },
-    { nome:"ADNI Paracambi", bairro:"Sabugo", endereco:"Av. Pres. João Goulart, 248, Paracambi - RJ" }
-  ];
+{nome:"IEADP – Assembleia de Deus Ministério de Paracambi",bairro:"Centro",endereco:"Rua Afonso Franco 15, Paracambi RJ"},
 
-  let delay = 0;
+{nome:"Igreja Batista de Paracambi",bairro:"Centro",endereco:"Rua Juiz Emílio Carmo 61, Paracambi RJ"},
 
-  igrejas.forEach((igreja) => {
+{nome:"Igreja Evangélica Congregacional",bairro:"Centro",endereco:"Rua Dr Nilo Peçanha 222, Paracambi RJ"},
 
-    setTimeout(() => {
+{nome:"Igreja Evangélica Povo de Deus do Brasil",bairro:"Centro",endereco:"Travessa Pedro Soares 17, Paracambi RJ"},
 
-      geocoder.geocode({ address: igreja.endereco }, (results, status) => {
+{nome:"Ministério Estrela da Alva",bairro:"Centro",endereco:"Avenida Coronel Othon 31, Paracambi RJ"},
 
-        if (status === "OK") {
+{nome:"Assembleia de Deus Unção Profética",bairro:"Centro",endereco:"Avenida dos Operários 360, Paracambi RJ"},
 
-          const location = results[0].geometry.location;
+{nome:"Assembleia de Deus Rua 10",bairro:"Lages",endereco:"Rua Deputado Romeu Natal 1017, Paracambi RJ"},
 
-          const marker = new google.maps.Marker({
-            map,
-            position: location,
-            title: igreja.nome
-          });
+{nome:"Assembleia de Deus Ministério de Lages",bairro:"Lages",endereco:"Rua Leal de Carvalho 50, Paracambi RJ"},
 
-          const info = new google.maps.InfoWindow({
-            content: `
-              <strong>${igreja.nome}</strong><br>
-              Bairro: ${igreja.bairro}<br>
-              ${igreja.endereco}
-            `
-          });
+{nome:"Ministério Semeando a Palavra",bairro:"Lages",endereco:"Praça Expedicionário Nilo Gama Flores 41, Paracambi RJ"},
 
-          marker.addListener("click", () => info.open(map, marker));
+{nome:"Comunidade Crescendo em Cristo",bairro:"Lages",endereco:"Rua Antônio Natal 134, Paracambi RJ"},
 
-          bounds.extend(location);
-          map.fitBounds(bounds);
+{nome:"Igreja Casa de Deus",bairro:"Lages",endereco:"Travessa Bom Jardim 64, Paracambi RJ"},
 
-          const item = document.createElement("div");
-          item.className = "item";
-          item.innerHTML = `<strong>${igreja.nome}</strong><br><small>${igreja.bairro}</small>`;
-          item.onclick = () => {
-            map.setZoom(16);
-            map.setCenter(location);
-            info.open(map, marker);
-          };
+{nome:"Igreja Cristo Vive de Paracambi",bairro:"Lages", lat:-22.628277223819055, lng:-43.7087224468603, endereco:"Estrada Eduardo Pereira Dias 149, Lages, Paracambi RJ" },
 
-          lista.appendChild(item);
+{nome:"Igreja Batista Guarajuba",bairro:"Guarajuba",endereco:"Rua São Jorge 201, Paracambi RJ"},
 
-        } else {
-          console.warn("Erro ao localizar:", igreja.nome, status);
-        }
-      });
+{nome:"Missão Evangélica do Brasil",bairro:"Sabugo",endereco:"Rua Beraldo Sacchi 955, Paracambi RJ"},
 
-    }, delay);
+{nome:"ADNI Paracambi",bairro:"Sabugo",endereco:"Avenida Presidente João Goulart 248, Paracambi RJ"},
 
-    delay += 600; // evita bloqueio do Google
+{nome:"Comunidade Rafá",bairro:"Jardim Nova Era",endereco:"Rua Rio de Janeiro 17, Paracambi RJ"},
 
-  });
+{nome:"Igreja Monte Gerizim",bairro:"Vila Theodoro",endereco:"Rua Santa Teresinha, Paracambi RJ"},
+
+{nome:"Igreja Brasa Viva",bairro:"Saudoso",endereco:"Estrada da Floresta, Paracambi RJ"},
+
+{nome:"Igreja Cristã Nova Vida",bairro:"Fábrica",endereco:"Rua Américo Rodrigues Ferreira 370, Paracambi RJ"}
+
+];
+
+let indice=0;
+
+function geocodificarProxima(){
+
+if(indice>=igrejas.length){
+return;
 }
+
+const igreja=igrejas[indice];
+
+geocoder.geocode({address:igreja.endereco},function(results,status){
+
+if(status==="OK"){
+
+const pos=results[0].geometry.location;
+
+const marker=new google.maps.Marker({
+map:map,
+position:pos,
+title:igreja.nome
+});
+
+const info=new google.maps.InfoWindow({
+content:`<b>${igreja.nome}</b><br>Bairro: ${igreja.bairro}<br>${igreja.endereco}`
+});
+
+marker.addListener("click",function(){
+info.open(map,marker);
+});
+
+const item=document.createElement("div");
+item.className="item";
+item.innerHTML=`<b>${igreja.nome}</b><br>${igreja.bairro}`;
+
+item.onclick=function(){
+map.setZoom(16);
+map.setCenter(pos);
+info.open(map,marker);
+};
+
+document.getElementById("lista").appendChild(item);
+
+}
+
+indice++;
+
+setTimeout(geocodificarProxima,200);
+
+});
+
+}
+
+geocodificarProxima();
+
+}
+
 </script>
 
 <script async defer
-  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD6eJ8kIie2pnWqKls4A8UZag3ERuJJ9jY&callback=initMap">
+src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD6eJ8kIie2pnWqKls4A8UZag3ERuJJ9jY&callback=initMap">
 </script>
 
 </body>
+
 </html>
+
+
+
+
+
+
+
+
