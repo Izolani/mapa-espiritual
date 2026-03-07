@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+<meta charset="UTF-8">
+<title>Mapa Espiritual de Paracambi</title>
+
+<style>
+
+body{
+margin:0;
+font-family:Arial;
+display:flex;
+}
+
+#lista{
+width:320px;
+height:100vh;
+overflow:auto;
+border-right:1px solid #ccc;
+padding:10px;
+background:#f7f7f7;
+}
+
+#map{
+flex:1;
+height:100vh;
+}
+
+.item{
+cursor:pointer;
+padding:8px;
+border-bottom:1px solid #ddd;
+}
+
+.item:hover{
+background:#e8f4ff;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div id="lista">
+<h2>Igrejas de Paracambi</h2>
+</div>
+
+<div id="map"></div>
+
+<script>
+
+let map;
+let geocoder;
+
+function initMap(){
+
+map = new google.maps.Map(document.getElementById("map"),{
+zoom:13,
+center:{lat:-22.6070,lng:-43.7108}
+});
+
+geocoder = new google.maps.Geocoder();
+
+const igrejas=[
+
+{nome:"IEADP – Assembleia de Deus Ministério de Paracambi",bairro:"Centro",endereco:"Rua Afonso Franco 15, Paracambi RJ"},
+
+{nome:"Igreja Batista de Paracambi",bairro:"Centro",endereco:"Rua Juiz Emílio Carmo 61, Paracambi RJ"},
+
+{nome:"Igreja Evangélica Congregacional",bairro:"Centro",endereco:"Rua Dr Nilo Peçanha 222, Paracambi RJ"},
+
+{nome:"Igreja Evangélica Povo de Deus do Brasil",bairro:"Centro",endereco:"Travessa Pedro Soares 17, Paracambi RJ"},
+
+{nome:"Ministério Estrela da Alva",bairro:"Centro",endereco:"Avenida Coronel Othon 31, Paracambi RJ"},
+
+{nome:"Assembleia de Deus Unção Profética",bairro:"Centro",endereco:"Avenida dos Operários 360, Paracambi RJ"},
+
+{nome:"Assembleia de Deus Rua 10",bairro:"Lages",endereco:"Rua Deputado Romeu Natal 1017, Paracambi RJ"},
+
+{nome:"Assembleia de Deus Ministério de Lages",bairro:"Lages",endereco:"Rua Leal de Carvalho 50, Paracambi RJ"},
+
+{nome:"Ministério Semeando a Palavra",bairro:"Lages",endereco:"Praça Expedicionário Nilo Gama Flores 41, Paracambi RJ"},
+
+{nome:"Comunidade Crescendo em Cristo",bairro:"Lages",endereco:"Rua Antônio Natal 134, Paracambi RJ"},
+
+{nome:"Igreja Casa de Deus",bairro:"Lages",endereco:"Travessa Bom Jardim 64, Paracambi RJ"},
+
+{nome:"Igreja Cristo Vive de Paracambi",bairro:"Lages", lat:-22.628277223819055, lng:-43.7087224468603, endereco:"Estrada Eduardo Pereira Dias 149, Lages, Paracambi RJ" },
+
+{nome:"Igreja Batista Guarajuba",bairro:"Guarajuba",endereco:"Rua São Jorge 201, Paracambi RJ"},
+
+{nome:"Missão Evangélica do Brasil",bairro:"Sabugo",endereco:"Rua Beraldo Sacchi 955, Paracambi RJ"},
+
+{nome:"ADNI Paracambi",bairro:"Sabugo",endereco:"Avenida Presidente João Goulart 248, Paracambi RJ"},
+
+{nome:"Comunidade Rafá",bairro:"Jardim Nova Era",endereco:"Rua Rio de Janeiro 17, Paracambi RJ"},
+
+{nome:"Igreja Monte Gerizim",bairro:"Vila Theodoro",endereco:"Rua Santa Teresinha, Paracambi RJ"},
+
+{nome:"Igreja Brasa Viva",bairro:"Saudoso",endereco:"Estrada da Floresta, Paracambi RJ"},
+
+{nome:"Igreja Cristã Nova Vida",bairro:"Fábrica",endereco:"Rua Américo Rodrigues Ferreira 370, Paracambi RJ"}
+
+];
+
+let indice=0;
+
+function geocodificarProxima(){
+
+if(indice>=igrejas.length){
+return;
+}
+
+const igreja=igrejas[indice];
+
+geocoder.geocode({address:igreja.endereco},function(results,status){
+
+if(status==="OK"){
+
+const pos=results[0].geometry.location;
+
+const marker=new google.maps.Marker({
+map:map,
+position:pos,
+title:igreja.nome
+});
+
+const info=new google.maps.InfoWindow({
+content:`<b>${igreja.nome}</b><br>Bairro: ${igreja.bairro}<br>${igreja.endereco}`
+});
+
+marker.addListener("click",function(){
+info.open(map,marker);
+});
+
+const item=document.createElement("div");
+item.className="item";
+item.innerHTML=`<b>${igreja.nome}</b><br>${igreja.bairro}`;
+
+item.onclick=function(){
+map.setZoom(16);
+map.setCenter(pos);
+info.open(map,marker);
+};
+
+document.getElementById("lista").appendChild(item);
+
+}
+
+indice++;
+
+setTimeout(geocodificarProxima,200);
+
+});
+
+}
+
+geocodificarProxima();
+
+}
+
+</script>
+
+<script async defer
+src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD6eJ8kIie2pnWqKls4A8UZag3ERuJJ9jY&callback=initMap">
+</script>
+
+</body>
+
+</html>
+
+
+
+
+
+
+
+
